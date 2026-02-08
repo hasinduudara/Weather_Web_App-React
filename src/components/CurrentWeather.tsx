@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { WeatherData } from "../types";
+import type { WeatherData } from "../types";
 import { motion } from "motion/react";
 
 interface Props {

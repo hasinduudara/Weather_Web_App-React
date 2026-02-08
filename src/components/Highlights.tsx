@@ -1,5 +1,5 @@
-import { Wind, Droplets, Sun, Eye } from "lucide-react";
-import { WeatherData } from "../types";
+import { Wind, Droplets, Eye } from "lucide-react";
+import type { WeatherData } from "../types";
 
 interface Props {
     data: WeatherData;

@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Search, CloudRain } from "lucide-react";
 import { motion } from "motion/react";
 import { getWeatherByCity } from "./services/weatherService";
-import { WeatherData } from "./types";
+import type { WeatherData } from "./types";
 import CurrentWeather from "./components/CurrentWeather";
 import Highlights from "./components/Highlights";
 import Forecast from "./components/Forecast";
@@ -12,7 +12,7 @@ function App() {
     const [weather, setWeather] = useState<WeatherData | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const fetchWeather = async () => {
+    const fetchWeather = useCallback(async () => {
         setLoading(true);
         try {
             const data = await getWeatherByCity(city);
@@ -22,11 +22,11 @@ function App() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [city]);
 
     useEffect(() => {
         fetchWeather();
-    }, []);
+    }, [fetchWeather]);
 
     return (
         <div className="min-h-screen bg-[#0B131E] text-white p-4 md:p-8 font-sans flex justify-center items-start md:items-center">
