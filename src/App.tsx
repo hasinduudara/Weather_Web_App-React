@@ -1,35 +1,89 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import { Search, CloudRain } from "lucide-react";
+import { motion } from "motion/react";
+import { getWeatherByCity } from "./services/weatherService";
+import { WeatherData } from "./types";
+import CurrentWeather from "./components/CurrentWeather";
+import Highlights from "./components/Highlights";
+import Forecast from "./components/Forecast";
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [city, setCity] = useState("Colombo");
+    const [weather, setWeather] = useState<WeatherData | null>(null);
+    const [loading, setLoading] = useState(false);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const fetchWeather = async () => {
+        setLoading(true);
+        try {
+            const data = await getWeatherByCity(city);
+            setWeather(data);
+        } catch (error) {
+            console.error("Error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchWeather();
+    }, []);
+
+    return (
+        <div className="min-h-screen bg-[#0B131E] text-white p-4 md:p-8 font-sans flex justify-center items-start md:items-center">
+
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-4 gap-6"
+            >
+
+                {/* LEFT SECTION (Main Dashboard) */}
+                <div className="lg:col-span-3 space-y-6">
+
+                    {/* Header & Search Bar */}
+                    <header className="flex flex-col sm:flex-row justify-between items-center bg-[#202B3B] p-4 rounded-3xl gap-4">
+                        <div className="flex items-center gap-2">
+                            <div className="bg-blue-600 p-2 rounded-lg">
+                                <CloudRain className="text-white w-6 h-6" />
+                            </div>
+                            <span className="font-bold text-xl tracking-wide">WeatherLy</span>
+                        </div>
+
+                        <div className="relative w-full sm:w-auto sm:flex-1 max-w-md">
+                            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <input
+                                type="text"
+                                placeholder="Search city..."
+                                className="bg-[#0B131E] w-full py-3 pl-12 pr-4 rounded-full outline-none text-sm text-white focus:ring-2 focus:ring-blue-500 transition-all"
+                                value={city}
+                                onChange={(e) => setCity(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && fetchWeather()}
+                            />
+                        </div>
+                    </header>
+
+                    {/* Loading State or Weather Components */}
+                    {loading ? (
+                        <div className="text-center py-20 text-gray-400 animate-pulse">Loading weather data...</div>
+                    ) : weather ? (
+                        <>
+                            <CurrentWeather data={weather} />
+                            <Highlights data={weather} />
+                        </>
+                    ) : (
+                        <div className="text-center py-20 text-red-400">City not found</div>
+                    )}
+
+                </div>
+
+                {/* RIGHT SECTION (Forecast) */}
+                <div className="lg:col-span-1">
+                    <Forecast />
+                </div>
+
+            </motion.div>
+        </div>
+    );
 }
 
-export default App
+export default App;
