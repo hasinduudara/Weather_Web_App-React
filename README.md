@@ -187,14 +187,6 @@ This project is open source and available under the [MIT License](LICENSE).
 - Design inspiration from modern weather applications
 - Built with love using React and TypeScript ❤️
 
-## 📸 Screenshots
-
-### Desktop View
-![Desktop View](https://via.placeholder.com/800x450.png?text=Desktop+View)
-
-### Mobile View
-![Mobile View](https://via.placeholder.com/400x800.png?text=Mobile+View)
-
 ---
 
 ⭐ If you found this project helpful, please give it a star!
