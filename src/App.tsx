@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Search, CloudRain } from "lucide-react";
+import { Search } from "lucide-react";
 import { motion } from "motion/react";
 import { getWeatherByCity } from "./services/weatherService";
 import type { WeatherData } from "./types";
@@ -42,10 +42,12 @@ function App() {
 
                     {/* Header & Search Bar */}
                     <header className="flex flex-col sm:flex-row justify-between items-center bg-[#202B3B] p-4 rounded-3xl gap-4">
-                        <div className="flex items-center gap-2">
-                            <div className="bg-blue-600 p-2 rounded-lg">
-                                <CloudRain className="text-white w-6 h-6" />
-                            </div>
+                        <div className="flex items-center gap-3">
+                            <img
+                                src="/weather.png"
+                                alt="WeatherLy Logo"
+                                className="w-10 h-10 object-contain"
+                            />
                             <span className="font-bold text-xl tracking-wide">WeatherLy</span>
                         </div>
 
