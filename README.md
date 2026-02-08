@@ -2,6 +2,8 @@
 
 A modern, responsive weather application built with React, TypeScript, and Vite. Get real-time weather information for any city worldwide with a beautiful, animated user interface.
 
+<img width="1898" height="1019" alt="image" src="https://github.com/user-attachments/assets/0b20d003-8229-4b61-8a15-86077bbb134d" />
+
 ## ✨ Features
 
 - 🔍 **City Search**: Search for weather information for any city worldwide
@@ -21,7 +23,7 @@ A modern, responsive weather application built with React, TypeScript, and Vite.
 
 ## 🚀 Demo
 
-Visit the live demo: [Weather Web App](https://github.com/hasinduudara/Weather_Web_App-React.git)
+Visit the live demo: [Weather Web App](https://weather-web-app-react-kappa.vercel.app/)
 
 ## 🛠️ Technologies Used
 
