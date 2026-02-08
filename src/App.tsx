@@ -11,23 +11,28 @@ function App() {
     const [city, setCity] = useState("Colombo");
     const [weather, setWeather] = useState<WeatherData | null>(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [searchOpen, setSearchOpen] = useState(false);
     const [recentSearches, setRecentSearches] = useState<string[]>([]);
     const searchRef = useRef<HTMLDivElement>(null);
 
     const fetchWeather = useCallback(async (cityName: string = city) => {
         setLoading(true);
+        setError(null);
         try {
             const data = await getWeatherByCity(cityName);
             setWeather(data);
+            setCity(cityName);
 
             // Add to recent searches
             setRecentSearches(prev => {
                 const newSearches = [cityName, ...prev.filter(s => s !== cityName)];
                 return newSearches.slice(0, 5);
             });
-        } catch (error) {
-            console.error("Error:", error);
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Failed to fetch weather data';
+            setError(`City not found: "${cityName}". Please try another location.`);
+            console.error("Error fetching weather:", errorMessage);
         } finally {
             setLoading(false);
             setSearchOpen(false);
@@ -37,6 +42,16 @@ function App() {
     useEffect(() => {
         fetchWeather();
     }, []);
+
+    // Auto-dismiss error after 5 seconds
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError(null);
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
 
     // Close search on click outside
     useEffect(() => {
@@ -81,6 +96,35 @@ function App() {
                     className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl"
                 />
             </div>
+
+            {/* Error Notification Toast */}
+            <AnimatePresence>
+                {error && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -50, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -50, scale: 0.9 }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed top-8 left-1/2 transform -translate-x-1/2 z-50 max-w-md"
+                    >
+                        <div className="bg-red-500/90 backdrop-blur-xl border border-red-400/50 rounded-2xl p-4 shadow-2xl flex items-center gap-3">
+                            <div className="flex-shrink-0 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                <span className="text-2xl">⚠️</span>
+                            </div>
+                            <div className="flex-1">
+                                <p className="font-semibold text-white">Error</p>
+                                <p className="text-sm text-white/90">{error}</p>
+                            </div>
+                            <button
+                                onClick={() => setError(null)}
+                                className="flex-shrink-0 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <div className="relative z-10 max-w-7xl mx-auto">
                 <motion.div
